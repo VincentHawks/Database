@@ -1,0 +1,156 @@
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<AnchorPane fx:controller="database.MainController" xmlns:fx="http://javafx.com/fxml">
+    <MenuBar minWidth="570">
+        <Menu text="Файл">
+            <MenuItem text="Новый" onAction="#newFile" />
+            <MenuItem text="Открыть" onAction="#openFile" />
+            <SeparatorMenuItem/>
+            <MenuItem text="Создать резервную копию" onAction="#backup" />
+            <MenuItem text="Восстановить из резервной копии" onAction="#restore" />
+            <SeparatorMenuItem/>
+            <MenuItem text="Выход" onAction="#exit" />
+        </Menu>
+        <Menu text="Выделение">
+            <MenuItem text="Выделить все" onAction="#selectAll" />
+            <MenuItem text="Обратить выделение" onAction="#selectOpposite"/>
+            <MenuItem text="Снять выделение" onAction="#selectNone"/>
+        </Menu>
+        <Menu text="Справка">
+            <MenuItem text="Помощь" onAction="#help"/>
+            <MenuItem text="О программе" onAction="#about"/>
+        </Menu>
+    </MenuBar>
+
+    <!-- Menu bar is 25px tall, account for that -->
+    <ComboBox fx:id="searchMode" layoutX="5" layoutY="30" prefWidth="160" prefHeight="20">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Номер"/>
+                <String fx:value="Марка"/>
+                <String fx:value="Модель"/>
+                <String fx:value="Год выпуска (не старше)"/>
+                <String fx:value="Год выпуска (не младше)"/>
+                <String fx:value="Автомат (да/нет)"/>
+                <String fx:value="Объем (не менее), л"/>
+                <String fx:value="Объем (не более), л"/>
+            </FXCollections>
+        </items>
+        <value>
+            <String fx:value="Номер"/>
+        </value>
+    </ComboBox>
+    <TextField fx:id="searchBar" layoutX="170" layoutY="30" prefHeight="20" prefWidth="310"/>
+    <Button text="Найти" onAction="#search" prefHeight="20" prefWidth="80" layoutX="485" layoutY="30"/>
+
+    <!-- Table header -->
+    <Label text="Номер" textAlignment="CENTER" layoutX="5" layoutY="80" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <Label text="Марка" textAlignment="CENTER" layoutX="85" layoutY="80" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <Label text="Модель" textAlignment="CENTER" layoutX="165" layoutY="80" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <Label text="Год" textAlignment="CENTER" layoutX="245" layoutY="80" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <Label text="Автомат" textAlignment="CENTER" layoutX="325" layoutY="80" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <Label text="Объем" textAlignment="CENTER" layoutX="405" layoutY="80" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <Label text="Действие" textAlignment="CENTER" layoutX="485" layoutY="80" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+
+    <!-- Add new car -->
+    <TextField fx:id="licenseField" onKeyTyped="#updateButtonMode" layoutX="5" layoutY="100" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <TextField fx:id="makeField" onKeyTyped="#updateButtonMode" layoutX="85" layoutY="100" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <TextField fx:id="modelField" onKeyTyped="#updateButtonMode" layoutX="165" layoutY="100" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <TextField fx:id="yearField" onKeyTyped="#updateButtonMode" layoutX="245" layoutY="100" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <ComboBox fx:id="gearboxField" onAction="#updateButtonMode" layoutX="325" layoutY="100" prefWidth="80" minHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="" />
+                <String fx:value="Да" />
+                <String fx:value="Нет" />
+            </FXCollections>
+        </items>
+        <value>
+            <String fx:value="" />
+        </value>
+    </ComboBox>
+    <TextField fx:id="volumeField" onKeyTyped="#updateButtonMode" layoutX="405" layoutY="100" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+    <!-- This button basically has 3 different states/actions in different situations
+    -    0 checkboxes set - add a new car
+    -    >0 checkboxes set & fields are empty - delete selected
+    -    >0 checkboxes set & fields are not empty - edit selected (only edit non-empty fields)
+    -    The state/action of the button must at all times be denoted by the text on it (Добавить, Удалить, Изменить respectively)
+    -->
+    <Button fx:id="actionButton" onAction="#addCar" text="Добавить" layoutX="485" layoutY="100" prefWidth="80" prefHeight="20" style="
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+"/>
+
+    <!-- Container for visualised database entries -->
+    <ScrollPane layoutY="125" layoutX="4" prefWidth="561" prefHeight="415">
+        <AnchorPane fx:id="tableContainer" style="
+            -fx-border-color: black;
+            -fx-border-width: 1;
+            -fx-border-style: solid;">
+
+        </AnchorPane>
+    </ScrollPane>
+</AnchorPane>
